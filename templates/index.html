@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <title>User input data for FizzBuzz</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+        <script type = "text/javascript" src = {{ url_for('static', filename = 'scripts.js')}} >
+        </script>
+    </head>
+    <body>
+        <div id="container">
+            <div class="title">
+                <h1>Let's Play a game of FizzBuzz on the phone!</h1>
+            </div>
+            <div id="content">
+                <form name = "call_me" method="post" onsubmit = "return validate_inputs();" action="{{ url_for('handle_make_call') }}">
+                  <label for="yournumber">Please enter your phone number (required format <b>+16662224444</b> , make sure it's 12 digits w/country code):</label>
+                  <input type="text" name="yournumber" /><br />
+                  <label for="time">How long until we call you (prefix your number by unit type. Ex: <b>s50</b> for 50 seconds, <b>m50</b> for 50 minutes, <b>h1</b> for one hour.)?:</label>
+                  <input type="text" name="time" /><br />
+                  <input id = "Submit_button" type="submit" value = "Submit"/>
+                  <label> You can also call this app directly at 760-654-2884 </label>
+                </form>
+            </div>
+        </div>
+        <div id = "history" >
+          <h2><b>Recent Call History</b></h2>
+            {% if call_history == [] %}
+            <p> No call history to display yet. Make a call! </p>
+            {% else %}
+            <table width = "100%">
+               {% for call_item in call_history %}
+               <tr>
+                    <td> <b>Datetime:</b> {{(call_item['Datetime'][18:])}} </td>
+                    <td> <b>PhoneNumber:</b> {{call_item['PhoneNumber']}} </td>
+                    <td> <b>UserInput:</b>{{call_item['UserInput']}} </td>
+                    <td> <form name = "Call_Replay" method="POST" action="{{url_for('handle_call_replay')}}">
+                          <input type="hidden" name="PhoneNumber" value= {{ call_item['PhoneNumber']}} />
+                          <input type="hidden" name="UserInput" value= {{call_item['UserInput']}} />
+                          <input type="submit" name="submit" value="Call Again" />
+                        </form>
+                    </td>
+               </tr>
+               {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+    </body>
+</html>
